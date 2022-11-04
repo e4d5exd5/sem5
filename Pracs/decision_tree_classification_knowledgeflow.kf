@@ -1,0 +1,104 @@
+{
+	"flow_name" : "decision tree classification knowledgeflow",
+	"steps" : [
+		{
+			"class" : "weka.knowledgeflow.steps.Loader",
+			"properties" : {
+				"loader" : {
+					"type" : "loader",
+					"class" : "weka.core.converters.ArffLoader",
+					"filePath" : "C:/Program Files/Weka-3-8-6/data/iris.arff",
+					"useRelativePath" : false
+				},
+				"name" : "ArffLoader"
+			},
+			"connections" : {
+				"dataSet" : [
+					"ClassAssigner"
+				]
+			},
+			"coordinates" : "76,130"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Filter",
+			"properties" : {
+				"filter" : {
+					"type" : "optionHandler",
+					"class" : "weka.filters.unsupervised.attribute.ClassAssigner",
+					"options" : "-C last"
+				},
+				"name" : "ClassAssigner"
+			},
+			"connections" : {
+				"dataSet" : [
+					"CrossValidationFoldMaker"
+				]
+			},
+			"coordinates" : "197,133"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.CrossValidationFoldMaker",
+			"properties" : {
+				"name" : "CrossValidationFoldMaker",
+				"numFolds" : "10",
+				"preserveOrder" : false,
+				"seed" : "1"
+			},
+			"connections" : {
+				"trainingSet" : [
+					"J48"
+				]
+			},
+			"coordinates" : "313,142"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.Classifier",
+			"properties" : {
+				"classifier" : {
+					"type" : "optionHandler",
+					"class" : "weka.classifiers.trees.J48",
+					"options" : "-C 0.25 -M 2"
+				},
+				"loadClassifierFileName" : "C:/Program Files/Weka-3-8-6/data/iris.arff",
+				"name" : "J48",
+				"resetIncrementalClassifier" : false,
+				"updateIncrementalClassifier" : true
+			},
+			"connections" : {
+				"batchClassifier" : [
+					"ClassifierPerformanceEvaluator"
+				]
+			},
+			"coordinates" : "423,150"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.ClassifierPerformanceEvaluator",
+			"properties" : {
+				"collectPredictionsForVisAndAUC" : true,
+				"costMatrixString" : "",
+				"errorPlotPointSizeProportionalToMargin" : false,
+				"evaluateWithRespectToCosts" : false,
+				"evaluationMetricsToOutput" : "Correct,Incorrect,Kappa,Total cost,Average cost,KB relative,KB information,Correlation,Complexity 0,Complexity scheme,Complexity improvement,MAE,RMSE,RAE,RRSE,TP rate,FP rate,Precision,Recall,F-measure,MCC,ROC area,PRC area",
+				"name" : "ClassifierPerformanceEvaluator",
+				"outputConfusionMatrix" : true,
+				"outputEntropyMetrics" : false,
+				"outputPerClassStats" : true
+			},
+			"connections" : {
+				"text" : [
+					"TextViewer"
+				]
+			},
+			"coordinates" : "540,159"
+		},
+		{
+			"class" : "weka.knowledgeflow.steps.TextViewer",
+			"properties" : {
+				"name" : "TextViewer"
+			},
+			"connections" : {
+			},
+			"coordinates" : "654,163"
+		}
+	]
+}
